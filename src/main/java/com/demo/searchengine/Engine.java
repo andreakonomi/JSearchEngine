@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 public class Engine {
     public void Run() {
-        String response = "";
+        String response;
         String input = PromptUser();
 
         while (!IsExitInput(input)){
@@ -67,7 +67,7 @@ public class Engine {
     * Checks if the input by the user is exit related.
     */
     private boolean IsExitInput(String input){
-        return input.toLowerCase().equals("exit");
+        return input.equalsIgnoreCase("exit");
     }
 
     /**
