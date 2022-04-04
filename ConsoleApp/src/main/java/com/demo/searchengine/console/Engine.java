@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Engine {
-    public void Run() {
+    public void run() {
         String response;
         String input = PromptUser();
 
-        while (!IsExitInput(input)){
-            response = ProcessInput(input);
+        while (!isExitInput(input)){
+            response = processInput(input);
 
             System.out.println(response);
             input = PromptUser();
@@ -19,19 +19,19 @@ public class Engine {
         System.out.println("Your data is safe with us, see you next time!");
     }
 
-    private String ProcessInput(String input) {
+    private String processInput(String input) {
         if (input == null || input.isBlank()){
             return "An empty input is not valid.";
         }
 
-        if (IsIndexInput(input)){
-            input = RemoveInputPrefix(input);
-            return InsertInput(input);
+        if (isIndexInput(input)){
+            input = removeInputPrefix(input);
+            return insertInput(input);
         }
 
-        if (IsQueryInput(input)){
-            input = RemoveInputPrefix(input);
-            return SearchData(input);
+        if (isQueryInput(input)){
+            input = removeInputPrefix(input);
+            return searchData(input);
         }
 
         return "No valid input has been provided";
@@ -41,14 +41,14 @@ public class Engine {
      * @param query Query to ask for information
      * @return The results found for the given query
      */
-    private String SearchData(String query) {
+    private String searchData(String query) {
         return "";
     }
 
     /**
      * Validates and inserts the given input by the user to the storage.
      */
-    private String InsertInput(String input) {
+    private String insertInput(String input) {
         return "";
     }
 
@@ -66,7 +66,7 @@ public class Engine {
     /*
     * Checks if the input by the user is exit related.
     */
-    private boolean IsExitInput(String input){
+    private boolean isExitInput(String input){
         return input.equalsIgnoreCase("exit");
     }
 
@@ -75,7 +75,7 @@ public class Engine {
      * @return true if the input uses the standard index indicator
      * for inserting to the index, false otherwise.
      */
-    private boolean IsIndexInput(String input){
+    private boolean isIndexInput(String input){
         if (input.length() < 7){
             return false;
         }
@@ -88,7 +88,7 @@ public class Engine {
      * @return true if the input provided uses the standard query
      * indicator at the beginning, false otherwise.
      */
-    private boolean IsQueryInput(String input){
+    private boolean isQueryInput(String input){
         if (input.length() < 6){
             return false;
         }
@@ -100,7 +100,7 @@ public class Engine {
      * @param input The input provided
      * @return Removes the prefix standard for search engine commands
      */
-    private String RemoveInputPrefix(String input){
+    private String removeInputPrefix(String input){
         return input.substring(5);
     }
 }
