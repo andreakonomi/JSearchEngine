@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ConsoleApp/ConsoleApp.iml" filepath="$PROJECT_DIR$/ConsoleApp/ConsoleApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EngineLibrary/EngineLibrary.iml" filepath="$PROJECT_DIR$/EngineLibrary/EngineLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/JSearchEngine.iml" filepath="$PROJECT_DIR$/JSearchEngine.iml" />
     </modules>
   </component>

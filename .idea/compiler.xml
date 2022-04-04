@@ -6,10 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="JSearchEngine" />
+        <module name="EngineLibrary" />
+        <module name="ConsoleApp" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ConsoleApp" target="18" />
+      <module name="EngineLibrary" target="18" />
       <module name="JSearchEngine" target="18" />
     </bytecodeTargetLevel>
   </component>
