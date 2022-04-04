@@ -1,8 +1,7 @@
 package com.demo.searchengine.console;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Properties;
 
 public class Engine {
     public void run() {
@@ -49,6 +48,18 @@ public class Engine {
      * Validates and inserts the given input by the user to the storage.
      */
     private String insertInput(String input) {
+        Properties props = new Properties();
+        String fileName = "application.properties";
+        try (FileInputStream fis = new FileInputStream(fileName)) {
+            props.load(fis);
+        } catch (Exception ex) {
+            return "There is a problem with the configurations file.";
+        }
+
+        String connectionUrl = props.getProperty("dbUrl");
+
+
+
         return "";
     }
 
