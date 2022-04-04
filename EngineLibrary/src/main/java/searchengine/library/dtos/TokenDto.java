@@ -1,6 +1,6 @@
-package com.demo.searchengine.dtos;
+package searchengine.library.dtos;
 
-public class Token implements ITokenDto{
+public class TokenDto implements ITokenDto{
     private String Content = "";
 
     public String getContent() {

@@ -1,5 +1,8 @@
 package com.demo.searchengine.console;
 
+import searchengine.library.dataAccess.IDocumentData;
+import searchengine.library.dtos.IDocumentDto;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -62,6 +65,17 @@ public class Engine {
 
 
         return "";
+    }
+
+    /**]
+     *
+     * @param inputDoc inputed string by the user to be converted to a DocumentDto
+     * @return DocumentDto represantation of the input.
+     */
+    private IDocumentDto parseDocument(String inputDoc){
+
+
+        return null;
     }
 
     private String PromptUser() {

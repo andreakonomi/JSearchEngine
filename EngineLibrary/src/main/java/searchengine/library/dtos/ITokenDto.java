@@ -1,4 +1,4 @@
-package com.demo.searchengine.dtos;
+package searchengine.library.dtos;
 
 public interface ITokenDto {
     String getContent();

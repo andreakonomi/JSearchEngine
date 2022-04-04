@@ -1,6 +1,6 @@
-package com.demo.searchengine.dataAccess;
+package searchengine.library.dataAccess;
 
-import com.demo.searchengine.dtos.IDocumentDto;
+import searchengine.library.dtos.IDocumentDto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.demo.searchengine.entities;
+package searchengine.library.entities;
 
 public class Token {
     private int Id;

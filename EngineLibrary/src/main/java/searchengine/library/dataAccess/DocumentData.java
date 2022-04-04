@@ -1,7 +1,7 @@
-package com.demo.searchengine.dataAccess;
+package searchengine.library.dataAccess;
 
-import com.demo.searchengine.dtos.IDocumentDto;
-import com.demo.searchengine.dtos.ITokenDto;
+import searchengine.library.dtos.IDocumentDto;
+import searchengine.library.dtos.ITokenDto;
 
 import java.util.List;
 
@@ -24,11 +24,13 @@ public class DocumentData implements IDocumentData{
             throw new IllegalArgumentException("The content provided is invalid, all tokens need to be alphanumerical!");
         }
 
-
+        // initiate repository
     }
 
     @Override
     public List<int> searchByTokensContent(String queryExpression) {
+
+
         return null;
     }
 

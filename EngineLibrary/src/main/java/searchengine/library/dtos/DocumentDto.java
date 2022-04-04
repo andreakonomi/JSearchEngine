@@ -1,4 +1,4 @@
-package com.demo.searchengine.dtos;
+package searchengine.library.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
