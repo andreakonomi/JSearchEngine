@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IDocumentDto {
-    int Id = 0;
-    List<ITokenDto> Tokens = new ArrayList<>();
+    int getId();
+    void setId(int id);
+    List<ITokenDto> getTokens();
+    void setTokens(List<ITokenDto> tokens);
 }

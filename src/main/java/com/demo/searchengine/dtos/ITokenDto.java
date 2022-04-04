@@ -1,5 +1,6 @@
 package com.demo.searchengine.dtos;
 
 public interface ITokenDto {
-    String Content = "";
+    String getContent();
+    void setContent(String content);
 }
