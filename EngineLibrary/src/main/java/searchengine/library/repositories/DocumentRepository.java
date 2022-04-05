@@ -51,7 +51,7 @@ public class DocumentRepository implements IDocumentRepository {
 
             statement.setInt(1, id);
 
-           statement.executeQuery();
+           statement.executeUpdate();
            statement.close();
         }
         catch (SQLException ex){
@@ -71,7 +71,7 @@ public class DocumentRepository implements IDocumentRepository {
 
             statement.setInt(1, id);
 
-            statement.executeQuery();
+            statement.execute();
             statement.close();
         }
         catch (SQLException ex){
@@ -97,7 +97,7 @@ public class DocumentRepository implements IDocumentRepository {
                 statement.clearParameters();
             }
 
-            statement.executeQuery();
+            statement.executeBatch();
             statement.close();
         }
         catch (SQLException ex){
