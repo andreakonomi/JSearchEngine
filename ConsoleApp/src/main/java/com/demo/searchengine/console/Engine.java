@@ -2,8 +2,11 @@ package com.demo.searchengine.console;
 
 import searchengine.library.dataAccess.IDocumentData;
 import searchengine.library.dtos.IDocumentDto;
+import searchengine.library.dtos.ITokenDto;
 
 import java.io.*;
+import java.security.InvalidParameterException;
+import java.util.List;
 import java.util.Properties;
 
 public class Engine {
@@ -51,20 +54,28 @@ public class Engine {
      * Validates and inserts the given input by the user to the storage.
      */
     private String insertInput(String input) {
-        Properties props = new Properties();
-        String fileName = "application.properties";
-        try (FileInputStream fis = new FileInputStream(fileName)) {
-            props.load(fis);
-        } catch (Exception ex) {
-            return "There is a problem with the configurations file.";
+        try{
+            Properties props = new Properties();
+            String fileName = "C:\\Users\\user\\Desktop\\Coder\\Java\\JSearchEngine\\ConsoleApp\\src\\main\\resources\\application.properties";
+
+            try (FileInputStream fis = new FileInputStream(fileName)) {
+                props.load(fis);
+            } catch (Exception ex) {
+                return "There is a problem with the configurations file.";
+            }
+
+            String connectionUrl = props.getProperty("dbUrl");
+
+            IDocumentDto document = parseDocument(input);
+            IDocumentData docData = Factory.createDocumentData(connectionUrl);
+
+            docData.createDocument(document);
+
+            return "index ok ".concat(String.valueOf(document.getId()));
         }
-
-        String connectionUrl = props.getProperty("dbUrl");
-
-
-
-
-        return "";
+        catch(Exception ex){
+            return "index error ".concat(ex.getMessage());
+        }
     }
 
     /**]
@@ -72,21 +83,69 @@ public class Engine {
      * @param inputDoc inputed string by the user to be converted to a DocumentDto
      * @return DocumentDto represantation of the input.
      */
-    private IDocumentDto parseDocument(String inputDoc){
+    private IDocumentDto parseDocument (String inputDoc){
+        var docCreation = Factory.createDocumentDto();
+        var tokensArray = inputDoc.split(" ");
 
+        boolean ok;
+        int id;
+        try{
+            // first element is a null after split
+            id = Integer.parseInt(tokensArray[1]);
+        }
+        catch(Exception ex){
+            throw new InvalidParameterException("The id you have inserted is not numeric");
+        }
 
-        return null;
+        docCreation.setId(id);
+        docCreation.setTokens(parseContent(tokensArray));
+
+        return docCreation;
     }
 
     private String PromptUser() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try{
             System.out.print("Press 'Exit' or insert a token: ");
-            return reader.readLine();
+            return reader.readLine().trim();
         }
         catch(Exception e){
             return "Invalid input";
         }
+    }
+
+    private List<ITokenDto> parseContent(String[] tokens){
+        // array's first element is a null element from the split method
+        String tokenContent = "";
+        boolean isValid = true;
+        int arrayLength = tokens.length;
+
+        if (arrayLength < 3){
+            throw new InvalidParameterException("The document needs to have at least one token.");
+        }
+
+        List<ITokenDto> tokensList = Factory.createTokensList();
+
+        for (int i = 2; i < arrayLength; i++){
+            tokenContent = tokens[i];
+            isValid = isTokenValid(tokenContent);
+
+            if(!isValid){
+                throw new InvalidParameterException("Incorrect input!The value provided for a token is not alphanumerical: ".concat(tokenContent));
+            }
+
+            tokensList.add(Factory.createToken(tokenContent));
+        }
+
+        return tokensList;
+    }
+
+    /**
+     * Validates if the content of a token is valid.
+     * @return true if content is valid, otherwise false.
+     */
+    private boolean isTokenValid(String tokenContent){
+        return tokenContent.chars().allMatch(Character::isLetterOrDigit);
     }
 
     /*
