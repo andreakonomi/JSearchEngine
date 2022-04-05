@@ -1,6 +1,7 @@
 package searchengine.library.repositories;
 
 import searchengine.library.dtos.IDocumentDto;
+import searchengine.library.dtos.ITokenDto;
 import searchengine.library.entities.Document;
 
 import javax.xml.transform.Result;
@@ -18,7 +19,7 @@ public class DocumentRepository implements IDocumentRepository {
         _connectionUrl = connectionUrl;
     }
 
-    public Document GetDocument(int id) throws Exception {
+    public Document getDocument(int id) throws Exception {
         try(Connection connection = DriverManager.getConnection(_connectionUrl)){
             PreparedStatement statement = connection
                     .prepareStatement("SELECT Id FROM Documents WHERE Id = ?");
@@ -41,7 +42,7 @@ public class DocumentRepository implements IDocumentRepository {
         }
     }
 
-    public void InsertDocument(IDocumentDto document) throws Exception{
+    public void insertDocument(IDocumentDto document) throws Exception{
         int id = document.getId();
 
         try(Connection connection = DriverManager.getConnection(_connectionUrl)){
@@ -61,7 +62,7 @@ public class DocumentRepository implements IDocumentRepository {
         }
     }
 
-    public void DeleteDocument(IDocumentDto document) throws Exception {
+    public void deleteDocument(IDocumentDto document) throws Exception {
         int id = document.getId();
 
         try(Connection connection = DriverManager.getConnection(_connectionUrl)){
@@ -78,6 +79,32 @@ public class DocumentRepository implements IDocumentRepository {
         }
         catch(Exception e){
             throw new Exception("Was not possible deleting document from the database, id: ".concat(String.valueOf(id)));
+        }
+
+    }
+
+    public void insertTokensForDocument(IDocumentDto document) throws Exception{
+        int id = document.getId();
+
+        try(Connection connection = DriverManager.getConnection(_connectionUrl)){
+            PreparedStatement statement = connection
+                    .prepareStatement("INSERT INTO Tokens(Content, DocumentId) VALUES(?, ?)");
+
+            for (ITokenDto token :document.getTokens()) {
+                statement.setString(1, token.getContent());
+                statement.setInt(2, id);
+                statement.addBatch();
+                statement.clearParameters();
+            }
+
+            statement.executeQuery();
+            statement.close();
+        }
+        catch (SQLException ex){
+            throw new Exception("There is a connection problem to the database.");
+        }
+        catch(Exception e){
+            throw new Exception("Was not possible inserting tokens to the database for the token with id: ".concat(String.valueOf(id)));
         }
 
     }

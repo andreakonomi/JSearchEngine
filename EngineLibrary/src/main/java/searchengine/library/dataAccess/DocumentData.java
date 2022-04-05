@@ -2,6 +2,9 @@ package searchengine.library.dataAccess;
 
 import searchengine.library.dtos.IDocumentDto;
 import searchengine.library.dtos.ITokenDto;
+import searchengine.library.entities.Document;
+import searchengine.library.repositories.DocumentRepository;
+import searchengine.library.repositories.IDocumentRepository;
 
 import java.util.List;
 
@@ -18,13 +21,24 @@ public class DocumentData implements IDocumentData{
     }
 
     @Override
-    public void createDocument(IDocumentDto document) throws IllegalArgumentException{
+    public void createDocument(IDocumentDto document) throws Exception{
         boolean valid = isDocumentValid(document);
         if (!valid){
             throw new IllegalArgumentException("The content provided is invalid, all tokens need to be alphanumerical!");
         }
 
-        // initiate repository
+        IDocumentRepository docRepo = new DocumentRepository(_connectionUrl);
+        int id = document.getId();
+
+        Document doc = docRepo.getDocument(id);
+        if(doc == null){
+            docRepo.insertDocument(document);
+        }
+        else{
+            docRepo.deleteDocument(document);
+        }
+
+        docRepo.insertTokensForDocument(document);
     }
 
     @Override
