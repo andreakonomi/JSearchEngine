@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IDocumentData {
     void createDocument (IDocumentDto document);
-    List<int> searchByTokensContent(String queryExpression);
+    List<Integer> searchByTokensContent(String queryExpression);
 }

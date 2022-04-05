@@ -28,7 +28,7 @@ public class DocumentData implements IDocumentData{
     }
 
     @Override
-    public List<int> searchByTokensContent(String queryExpression) {
+    public List<Integer> searchByTokensContent(String queryExpression) {
 
 
         return null;
