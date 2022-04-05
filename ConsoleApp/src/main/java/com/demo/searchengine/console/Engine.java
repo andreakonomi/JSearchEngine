@@ -6,10 +6,12 @@ import searchengine.library.dtos.ITokenDto;
 
 import java.io.*;
 import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class Engine {
+
+    private Hashtable<String, ArrayList<Integer>> DocumentIdsCache = new Hashtable<>();
+
     public void run() {
         String response;
         String input = PromptUser();
@@ -70,6 +72,9 @@ public class Engine {
             IDocumentData docData = Factory.createDocumentData(connectionUrl);
 
             docData.createDocument(document);
+
+            //cache no longer valid after input
+            DocumentIdsCache.clear();
 
             return "index ok ".concat(String.valueOf(document.getId()));
         }
