@@ -29,9 +29,69 @@ public class QueryBuilder {
             return createQueryForDoubleParameters(finalQuery, logicOperator, nextValue, paramsToPass);
         }
 
+        if (argsCount == 5){
+            return HandleMultipleParameters(initialQuery, paramsToPass);
+        }
 
+        if (argsCount > 5){
+            throw new InvalidParameterException("Query is too long to process.");
+        }
 
-        return null;
+        return finalQuery;
+    }
+
+    private static String HandleMultipleParameters(String initialQuery, List<String> parameters){
+        boolean onlyAnds = !initialQuery.contains("|");
+        boolean onlyOrs = !initialQuery.contains("&");
+        String finalQuery = "";
+
+        if(onlyAnds || onlyOrs){
+            initialQuery = removeOperatorsSymbolsfromQuery(initialQuery);
+
+            var splittedArray = splitQueryString(initialQuery);
+            String par1 = splittedArray[0];
+            String par2 = splittedArray[1];
+            String par3 = splittedArray[2];
+
+            if (onlyAnds){
+                finalQuery = getOnlyDoubleAndsQuery(par1, par2, par3, parameters);
+            }
+
+            if (onlyOrs){
+                finalQuery = giveOnlyDoubleOrsQuery(par1, par2, par3, parameters);
+            }
+        }
+    }
+
+    private static  String giveOnlyDoubleOrsQuery(String par1, String par2, String par3, List<String parameters>){
+        parameters.add(par1);
+        parameters.add(par2);
+        parameters.add(par3);
+
+        return """
+                SELECT DISTINCT DocumentId from Tokens
+                WHERE Content IN (?, ?, ?)
+                """;
+    }
+
+    private static String getOnlyDoubleAndsQuery(String par1, String par2, String par3, List<String> parameters){
+        parameters.add(par1);
+        parameters.add(par2);
+        parameters.add(par3);
+
+        return """
+                SELECT DocumentId FROM Tokens WHERE Content = ?
+                INTERSECT
+                SELECT DocumentId FROM Tokens WHERE Content = ?
+                INTERSECT
+                SELECT DocumentId FROM Tokens WHERE Content = ?""";
+    }
+
+    private static String removeOperatorsSymbolsfromQuery(String query){
+        return query.replace("&", "")
+                .replace("|", "")
+                .replace("(", "")
+                .replace(")", "");
     }
 
     private static String createQueryForDoubleParameters(String query, String secondArg, String logicOperator, List<String> parameters){
