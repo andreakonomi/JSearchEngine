@@ -1,11 +1,18 @@
 package searchengine.library.dataAccess;
 
+import searchengine.library.Factory;
+import searchengine.library.QueryBuilder;
 import searchengine.library.dtos.IDocumentDto;
 import searchengine.library.dtos.ITokenDto;
 import searchengine.library.entities.Document;
 import searchengine.library.repositories.DocumentRepository;
 import searchengine.library.repositories.IDocumentRepository;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentData implements IDocumentData{
@@ -43,6 +50,37 @@ public class DocumentData implements IDocumentData{
 
     @Override
     public List<Integer> searchByTokensContent(String queryExpression) {
+
+        if (queryExpression == null || queryExpression.isBlank()){
+            return null;
+        }
+
+        return getTokensForQuery(queryExpression.trim());
+    }
+
+    private List<Integer> getTokensForQuery(String queryExpression) throws Exception {
+        List<String> parameters = new ArrayList<>();
+
+        try(Connection connection = DriverManager.getConnection(_connectionUrl)){
+            PreparedStatement statement = connection
+                    .prepareStatement(QueryBuilder.getFormatedQueryToExec(queryExpression, parameters));
+
+
+
+
+
+
+
+
+            statement.executeQuery();
+            statement.close();
+        }
+        catch (SQLException ex){
+            throw new Exception("There is a connection problem to the database.");
+        }
+        catch(Exception e){
+            throw new Exception("Was not possible inserting tokens to the database for the token with id: ".concat(String.valueOf(id)));
+        }
 
 
         return null;

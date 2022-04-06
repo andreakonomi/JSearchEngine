@@ -7,6 +7,7 @@ import searchengine.library.entities.Document;
 import javax.xml.transform.Result;
 import java.security.InvalidParameterException;
 import java.sql.*;
+import java.util.List;
 
 public class DocumentRepository implements IDocumentRepository {
     private String _connectionUrl = "";
@@ -108,4 +109,7 @@ public class DocumentRepository implements IDocumentRepository {
         }
 
     }
+
+
+
 }

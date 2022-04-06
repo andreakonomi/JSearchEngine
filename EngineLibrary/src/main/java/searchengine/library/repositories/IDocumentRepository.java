@@ -2,6 +2,7 @@ package searchengine.library.repositories;
 
 import searchengine.library.dtos.IDocumentDto;
 import searchengine.library.entities.Document;
+import java.util.List;
 
 public interface IDocumentRepository {
     Document getDocument(int id) throws Exception;
