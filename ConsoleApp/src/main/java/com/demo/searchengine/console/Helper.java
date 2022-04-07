@@ -6,6 +6,9 @@ import java.util.Properties;
 
 public class Helper {
 
+    /*/
+    reads the configuration specified by the requested key
+     */
     public static String readFromConfigs(String key) throws ConfigurationException {
         try{
             Properties props = new Properties();
@@ -17,7 +20,12 @@ public class Helper {
                 throw new ConfigurationException("There is a problem with the configurations file.");
             }
 
-            return props.getProperty(key);
+            var valueFound =  props.getProperty(key);
+            if (valueFound == null){
+                throw new ConfigurationException(String.format("The specified key: %s was not found in the configurations file", key));
+            }
+
+            return valueFound;
         }
         catch(Exception ex){
             throw new ConfigurationException("There is a problem with the configurations file.");

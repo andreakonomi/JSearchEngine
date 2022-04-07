@@ -7,6 +7,10 @@ import java.util.List;
 
 public class QueryBuilder {
 
+    /*/
+    Processes the query requested and populates the list that holds the parameters for the
+    procedure to be executed agains the data access layer
+     */
     public static String getFormatedQueryToExec(String initialQuery, List<String> paramsToPass){
         //a
         //a & b
@@ -41,6 +45,10 @@ public class QueryBuilder {
         return finalQuery;
     }
 
+    /*/
+    Handles the flow of queries with triple parameters, recognises the specific case
+    and ensures the query is generated according to the case.
+     */
     private static String HandleMultipleParameters(String initialQuery, List<String> parameters){
         boolean onlyAnds = !initialQuery.contains("|");
         boolean onlyOrs = !initialQuery.contains("&");
@@ -70,6 +78,10 @@ public class QueryBuilder {
         return finalQuery;
     }
 
+    /*/
+    Calculate the query expression need to be passed on the repository and populate the reference of parameters
+    with the needed parameters to be passed on the dataAccess repo
+     */
     private static String calculateMixedOperatorsQuery(String initialQuery, List<String> parameters){
         String query;
         String par1, par2 = "", par3 , par4 = "";
@@ -162,6 +174,9 @@ public class QueryBuilder {
                 SELECT DocumentId FROM Tokens WHERE Content = ?""";
     }
 
+    /*/
+    Removes the (, ), &, | and empty characters from the query.
+     */
     private static String removeOperatorsSymbolsfromQuery(String query){
         return query.replace("&", "")
                 .replace("|", "")
@@ -169,6 +184,9 @@ public class QueryBuilder {
                 .replace(")", "");
     }
 
+    /*/
+    Creates the sql query and populates the args for the double argument case.
+     */
     private static String createQueryForDoubleParameters(String query, String secondArg, String logicOperator, List<String> parameters){
         parameters.add(secondArg);
 
@@ -183,14 +201,23 @@ public class QueryBuilder {
         return query;
     }
 
+    /*/
+    Appends the second part of the sql query for the and case filter
+     */
     private static String AddAndClauseForNextArg(String initialQuery){
         return initialQuery.concat(" \nINTERSECT\nSELECT DISTINCT DocumentId FROM Tokens WHERE Content = ?");
     }
 
+    /*/
+    Appends the second part of the sql query for the or case filter
+     */
     private static String AddOrClauseForNextArg(String initialQuery){
         return initialQuery.concat(" OR Content = ?");
     }
 
+    /*/
+    Creates the sql query and populates the args for the single argument case.
+     */
     private static String createSingleArgQuery(String value, List<String> parameters){
         parameters.add(value);
         return "SELECT DISTINCT DocumentId FROM Tokens WHERE Content = ?";

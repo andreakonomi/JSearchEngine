@@ -28,7 +28,7 @@ public class Engine {
 
     private String processInput(String input) {
         if (input == null || input.isBlank()){
-            return "An empty input is not valid.";
+            return "index error an empty input is not valid.";
         }
 
         if (isIndexInput(input)){
@@ -41,7 +41,7 @@ public class Engine {
             return searchData(input);
         }
 
-        return "No valid input has been provided";
+        return "index error no valid input has been provided";
     }
 
     /**
@@ -127,7 +127,7 @@ public class Engine {
             //cache no longer valid after input
             DocumentIdsCache.clear();
 
-            return "index ok ".concat(String.valueOf(document.getId()));
+            return String.format("index ok %s", String.valueOf(document.getId()));
         }
         catch(Exception ex){
             return "index error ".concat(ex.getMessage());

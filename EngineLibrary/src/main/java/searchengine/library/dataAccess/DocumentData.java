@@ -52,17 +52,18 @@ public class DocumentData implements IDocumentData{
             return null;
         }
 
-        return getTokensForQuery(queryExpression.trim());
+        List<String> parameters = new ArrayList<>();
+        String queryToPass = QueryBuilder.getFormatedQueryToExec(queryExpression.trim(), parameters);
+
+        return getDocumentsForTokens(queryToPass, parameters);
     }
 
-    private List<Integer> getTokensForQuery(String queryExpression) throws Exception {
-        List<String> parameters = new ArrayList<>();
+    private List<Integer> getDocumentsForTokens(String queryExpression, List<String> parameters) throws Exception {
         List<Integer> response = new ArrayList<>();
         int counter = 1;
 
         try(Connection connection = DriverManager.getConnection(_connectionUrl)){
-            PreparedStatement statement = connection
-                    .prepareStatement(QueryBuilder.getFormatedQueryToExec(queryExpression, parameters));
+            PreparedStatement statement = connection.prepareStatement(queryExpression);
 
             for (String param:parameters) {
                 statement.setString(counter++ , param);
