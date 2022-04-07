@@ -9,4 +9,5 @@ public interface IDocumentRepository {
     void insertDocument(IDocumentDto document) throws Exception;
     void deleteDocument(IDocumentDto document) throws Exception;
     void insertTokensForDocument(IDocumentDto document) throws Exception;
+    List<Integer> queryDocumentsForTokensContent(String query, List<String> parameters) throws Exception;
 }

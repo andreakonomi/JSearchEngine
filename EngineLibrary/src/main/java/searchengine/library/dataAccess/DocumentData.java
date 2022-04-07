@@ -45,6 +45,10 @@ public class DocumentData implements IDocumentData{
         docRepo.insertTokensForDocument(document);
     }
 
+    /*/
+    takes the queryExpression requested by the user and returns the ids of the documents
+    matching that query request
+     */
     @Override
     public List<Integer> searchByTokensContent(String queryExpression) throws Exception {
 
@@ -55,7 +59,8 @@ public class DocumentData implements IDocumentData{
         List<String> parameters = new ArrayList<>();
         String queryToPass = QueryBuilder.getFormatedQueryToExec(queryExpression.trim(), parameters);
 
-        return getDocumentsForTokens(queryToPass, parameters);
+        var repo = Factory.getDocumentRepository(_connectionUrl);
+        return repo.queryDocumentsForTokensContent(queryToPass, parameters);
     }
 
     private List<Integer> getDocumentsForTokens(String queryExpression, List<String> parameters) throws Exception {

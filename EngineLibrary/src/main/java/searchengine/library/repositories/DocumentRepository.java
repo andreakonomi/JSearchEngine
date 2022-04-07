@@ -4,9 +4,9 @@ import searchengine.library.dtos.IDocumentDto;
 import searchengine.library.dtos.ITokenDto;
 import searchengine.library.entities.Document;
 
-import javax.xml.transform.Result;
 import java.security.InvalidParameterException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentRepository implements IDocumentRepository {
@@ -39,7 +39,7 @@ public class DocumentRepository implements IDocumentRepository {
             return doc;
         }
         catch (SQLException ex){
-            throw new Exception("An error occured while reading the document from the database, docId: ".concat(String.valueOf(id)));
+            throw new Exception("An error occurred while reading the document from the database, docId: ".concat(String.valueOf(id)));
         }
     }
 
@@ -110,6 +110,34 @@ public class DocumentRepository implements IDocumentRepository {
 
     }
 
+    @Override
+    public List<Integer> queryDocumentsForTokensContent(String query, List<String> parameters) throws Exception {
+        List<Integer> response = new ArrayList<>();
+        int counter = 1;
+
+        try(Connection connection = DriverManager.getConnection(_connectionUrl)){
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            for (String param:parameters) {
+                statement.setString(counter++ , param);
+            }
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                while(resultSet.next()){
+                    response.add(resultSet.getInt("DocumentId"));
+                }
+            }
+        }
+        catch (SQLException ex){
+            throw new Exception("There is a connection problem to the database.");
+        }
+        catch(Exception e){
+            throw new Exception("There was a problem while trying to query the tokens from the database.");
+        }
+
+        return response;
+
+    }
 
 
 }
