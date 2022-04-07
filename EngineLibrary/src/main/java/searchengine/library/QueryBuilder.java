@@ -45,6 +45,7 @@ public class QueryBuilder {
         boolean onlyAnds = !initialQuery.contains("|");
         boolean onlyOrs = !initialQuery.contains("&");
         String finalQuery = "";
+        parameters.clear();
 
         if(onlyAnds || onlyOrs){
             initialQuery = removeOperatorsSymbolsfromQuery(initialQuery);
