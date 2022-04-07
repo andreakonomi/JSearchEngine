@@ -198,14 +198,14 @@ public class QueryBuilder {
         var args = query.split(" ");
         int count = args.length;
 
-        if (count < 2){
+        if (count < 1){
             return null;
         }
 
         //remove the first empty entry that is created from the split method
-        String[] newArgs = new String[count - 1];
-        System.arraycopy(args, 1, newArgs, 0, count - 1);
+        //String[] newArgs = new String[count];
+        //System.arraycopy(args, 1, newArgs, 0, count - 1);
 
-        return newArgs;
+        return args;
     }
 }

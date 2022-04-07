@@ -86,9 +86,10 @@ public class Engine {
 
         StringBuilder builder = new StringBuilder();
 
-        list.forEach(x -> " ".concat(x.toString()));
+        list.forEach(x -> builder.append(String.format(" %s", x.toString())));
 
-        return builder.toString();
+        //removes a whitespace in front
+        return builder.toString().substring(1);
     }
 
     /*

@@ -17,7 +17,7 @@ public class Helper {
                 throw new ConfigurationException("There is a problem with the configurations file.");
             }
 
-            return props.getProperty("key");
+            return props.getProperty(key);
         }
         catch(Exception ex){
             throw new ConfigurationException("There is a problem with the configurations file.");
