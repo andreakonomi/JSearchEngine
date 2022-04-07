@@ -49,7 +49,65 @@ public class Engine {
      * @return The results found for the given query
      */
     private String searchData(String query) {
-        return "";
+        String valuesFound;
+        List<Integer> response;
+
+        try{
+            query = query.trim();
+
+            response = CheckForCachedResponse(query);
+            if (response == null){
+                String connUrl = Helper.readFromConfigs("dbUrl");
+
+                IDocumentData docData = Factory.createDocumentData(connUrl);
+
+                response = docData.searchByTokensContent(query);
+                if (response == null){
+                    return "query error Invalid query";
+                }
+
+                AddToCache(query, response);
+            }
+
+            valuesFound = ConvertToListString(response);
+        }
+        catch (Exception ex){
+            return "query error ".concat(ex.getMessage());
+        }
+
+        return "query results ".concat(valuesFound);
+    }
+
+    /*
+    Converts the list of integer to a string represantation.
+     */
+    private String ConvertToListString(List<Integer> list) {
+        if (list.size() == 0) return "not found";
+
+        StringBuilder builder = new StringBuilder();
+
+        list.forEach(x -> " ".concat(x.toString()));
+
+        return builder.toString();
+    }
+
+    /*
+    Adds the query exrpression and its result to the cache. If the cache has reached it's limit
+    clears the cache prior to adding.
+     */
+    private void AddToCache(String query, List<Integer> response) {
+        if (DocumentIdsCache.size() == 100){
+            DocumentIdsCache.clear();
+        }
+
+        DocumentIdsCache.put(query, new ArrayList<>(response));
+    }
+
+    /*
+    Checks the cache if a result has been stored for that request.
+     */
+    private List<Integer> CheckForCachedResponse(String query) {
+        return DocumentIdsCache.get(query);
     }
 
     /**
@@ -57,16 +115,8 @@ public class Engine {
      */
     private String insertInput(String input) {
         try{
-            Properties props = new Properties();
-            String fileName = "C:\\Users\\user\\Desktop\\Coder\\Java\\JSearchEngine\\ConsoleApp\\src\\main\\resources\\application.properties";
 
-            try (FileInputStream fis = new FileInputStream(fileName)) {
-                props.load(fis);
-            } catch (Exception ex) {
-                return "There is a problem with the configurations file.";
-            }
-
-            String connectionUrl = props.getProperty("dbUrl");
+            String connectionUrl = Helper.readFromConfigs("dbUrl");
 
             IDocumentDto document = parseDocument(input);
             IDocumentData docData = Factory.createDocumentData(connectionUrl);
