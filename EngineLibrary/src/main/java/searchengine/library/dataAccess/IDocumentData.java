@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IDocumentData {
     void createDocument (IDocumentDto document) throws Exception;
-    List<Integer> searchByTokensContent(String queryExpression);
+    List<Integer> searchByTokensContent(String queryExpression) throws Exception;
 }

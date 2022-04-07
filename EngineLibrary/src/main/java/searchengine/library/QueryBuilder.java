@@ -10,11 +10,11 @@ public class QueryBuilder {
         //a
         //a & b
         //a & (b | c)
-        String finalQuery = "";
+        String finalQuery;
         String query = initialQuery;
 
         query = query.replace("(", "").replace(")", "");
-        String[] argsArray = splitQueryString(initialQuery);
+        String[] argsArray = splitQueryString(query);
         if (argsArray == null){
             throw new InvalidParameterException("A token was not provided to search for.");
         }
@@ -61,9 +61,82 @@ public class QueryBuilder {
                 finalQuery = giveOnlyDoubleOrsQuery(par1, par2, par3, parameters);
             }
         }
+        else{
+            finalQuery = calculateMixedOperatorsQuery(initialQuery, parameters);
+        }
+
+        return finalQuery;
     }
 
-    private static  String giveOnlyDoubleOrsQuery(String par1, String par2, String par3, List<String parameters>){
+    private static String calculateMixedOperatorsQuery(String initialQuery, List<String> parameters){
+        String query;
+        String par1, par2 = "", par3 , par4 = "";
+        String a , b , c ;
+
+        query = """
+                    SELECT DocumentId FROM Tokens
+                    WHERE Content IN (@par1, @par2)
+                    INTERSECT
+                    SELECT DocumentId FROM Tokens
+                    WHERE Content IN (@par3, @par4)
+                """;
+
+        int indexOfAndOperator = initialQuery.indexOf("&");
+        int indexOfOrOperator = initialQuery.indexOf("|");
+        int indexOfOpeningBrace = initialQuery.indexOf("(");
+        int indexOfClosingBrace = initialQuery.indexOf(")");
+
+        initialQuery = removeOperatorsSymbolsfromQuery(initialQuery);
+        var arrayArgs = splitQueryString(initialQuery);
+
+        a = arrayArgs[0];
+        b = arrayArgs[1];
+        c = arrayArgs[2];
+
+        //  mode (a & b) | c ; mode a | (b & c)
+        if (indexOfAndOperator > indexOfOpeningBrace && indexOfAndOperator < indexOfClosingBrace){
+            if (indexOfClosingBrace < indexOfOrOperator){
+                // mode (a & b) | c = (a | c) & (b | c)
+                par1 = a;
+                par2 = c;
+                par3 = b;
+                par4 = c;
+            }
+            else{
+                // mode a | (b & c) = (a | b) & (a | c)
+                par1 = a;
+                par2 = b;
+                par3 = a;
+                par4 = c;
+            }
+        }
+        else{
+            // mode (a | b) & c ; // mode a & (b | c)
+            if (indexOfClosingBrace < indexOfAndOperator)
+            {
+                // mode (a | b) & c    =   (a | b) & (c | d) ; d is null
+                par1 = a;
+                par2 = b;
+                par3 = c;
+            }
+            else
+            {
+                // mode a & (b | c)   =    (a | b) & (b | c) ; b is null
+                par1 = a;
+                par3 = b;
+                par4 = c;
+            }
+        }
+
+        parameters.add(par1);
+        parameters.add(par2);
+        parameters.add(par3);
+        parameters.add(par4);
+
+        return query;
+    }
+
+    private static  String giveOnlyDoubleOrsQuery(String par1, String par2, String par3, List<String> parameters){
         parameters.add(par1);
         parameters.add(par2);
         parameters.add(par3);
@@ -131,9 +204,7 @@ public class QueryBuilder {
 
         //remove the first empty entry that is created from the split method
         String[] newArgs = new String[count - 1];
-        for (int i = 1; i < count; i++){
-            newArgs[i - 1] = args[i];
-        }
+        System.arraycopy(args, 1, newArgs, 0, count - 1);
 
         return newArgs;
     }

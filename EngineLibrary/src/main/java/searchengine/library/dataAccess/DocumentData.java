@@ -8,10 +8,7 @@ import searchengine.library.entities.Document;
 import searchengine.library.repositories.DocumentRepository;
 import searchengine.library.repositories.IDocumentRepository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +46,7 @@ public class DocumentData implements IDocumentData{
     }
 
     @Override
-    public List<Integer> searchByTokensContent(String queryExpression) {
+    public List<Integer> searchByTokensContent(String queryExpression) throws Exception {
 
         if (queryExpression == null || queryExpression.isBlank()){
             return null;
@@ -60,30 +57,31 @@ public class DocumentData implements IDocumentData{
 
     private List<Integer> getTokensForQuery(String queryExpression) throws Exception {
         List<String> parameters = new ArrayList<>();
+        List<Integer> response = new ArrayList<>();
+        int counter = 1;
 
         try(Connection connection = DriverManager.getConnection(_connectionUrl)){
             PreparedStatement statement = connection
                     .prepareStatement(QueryBuilder.getFormatedQueryToExec(queryExpression, parameters));
 
+            for (String param:parameters) {
+                statement.setString(counter++ , param);
+            }
 
-
-
-
-
-
-
-            statement.executeQuery();
-            statement.close();
+            try(ResultSet resultSet = statement.executeQuery()){
+                while(resultSet.next()){
+                    response.add(resultSet.getInt("DocumentId"));
+                }
+            }
         }
         catch (SQLException ex){
             throw new Exception("There is a connection problem to the database.");
         }
         catch(Exception e){
-            throw new Exception("Was not possible inserting tokens to the database for the token with id: ".concat(String.valueOf(id)));
+            throw new Exception("There was a problem while trying to query the tokens from the database.");
         }
 
-
-        return null;
+        return response;
     }
 
     /**
