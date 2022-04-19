@@ -69,4 +69,31 @@ class DocumentDataTest {
         return newDoc;
     }
 
+    @Test
+    void insertAlreadyExistingIdShould(){
+        // Arrange
+        List<Integer> idsFound = new ArrayList<>();
+
+        String tokenToTest = "firstToken";
+
+        IDocumentDto firstDoc = CreateDocumentDto(4, tokenToTest);
+        IDocumentDto secondDoc = CreateDocumentDto(4, "secondToken");
+
+        // Act
+        try{
+            docData.createDocument(firstDoc);
+            docData.createDocument(secondDoc);
+
+            idsFound = docData.searchByTokensContent(tokenToTest);
+            idsFound.add(0);
+        }
+        catch(Exception ex){
+            idsFound.add(0);
+        }
+
+        // Assert
+        assertNotEquals(idsFound.get(0), 4);
+
+    }
+
 }
